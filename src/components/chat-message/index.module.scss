@@ -1,0 +1,38 @@
+.main {
+  width: 100%;
+  margin-bottom: 20px;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+.message {
+  display: flex;
+}
+
+.user {
+  justify-content: flex-end;
+
+  .content {
+    background-color: #2e9ec3;
+  }
+}
+
+.assistant {
+  justify-content: flex-start;
+
+  .content {
+    background-color: #2ec37e;
+  }
+}
+
+.content {
+  color: #fff;
+  border-radius: 10px 10px 10px 10px;
+  max-width: calc(100% - 50px);
+  display: inline-block;
+  height: 100%;
+  line-height: 24px;
+  padding: 10px;
+}
