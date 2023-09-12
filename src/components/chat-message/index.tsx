@@ -1,6 +1,6 @@
-import { Space } from 'antd'
 import { clsx } from 'clsx'
 
+import { Markdown } from '~components/react-markdown'
 import { Role, type MessageItem } from '~types'
 
 import styles from './index.module.scss'
@@ -11,13 +11,19 @@ interface ChatMessageProps {
 
 const UserMessage = ({ message }: ChatMessageProps) => (
   <div className={clsx(styles.message, styles.user)}>
-    <div className={styles.content}>{message.content}</div>
+    <div className={styles.content}>
+      <div className={styles.contentBody}>{message.content}</div>
+    </div>
   </div>
 )
 
 const AssistantMessage = ({ message }: ChatMessageProps) => (
   <div className={clsx(styles.message, styles.assistant)}>
-    <div className={styles.content}>{message.content}</div>
+    <div className={styles.content}>
+      <div className={styles.contentBody}>
+        <Markdown children={message.content} />
+      </div>
+    </div>
   </div>
 )
 

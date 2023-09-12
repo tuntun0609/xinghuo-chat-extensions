@@ -3,10 +3,10 @@ import CryptoJs from 'crypto-js'
 
 import type { Config } from '~types'
 
-let requestObj = {
-  APPID: '43dd88b2',
-  APISecret: 'Y2FjZDQ0NzBjZDM4ZjdkODNiY2Q1Nzg5',
-  APIKey: '2b3e612da3b279e2aad1795cd54103c5',
+export const requestObj = {
+  APPID: process.env.PLASMO_PUBLIC_APPID,
+  APISecret: process.env.PLASMO_PUBLIC_APISecret,
+  APIKey: process.env.PLASMO_PUBLIC_APIKey,
   Uid: 'user',
 }
 

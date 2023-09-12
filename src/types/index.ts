@@ -31,3 +31,37 @@ export type MessageItem =
       content: string
       timestamp?: number
     }
+
+export enum Status {
+  First = 0,
+  Continue = 1,
+  End = 2,
+}
+
+export interface ChatResponse {
+  header: {
+    code: number
+    message: string
+    sid: string
+    status: Status
+  }
+  payload: {
+    choices: {
+      seq: number
+      status: Status
+      text: {
+        content: string
+        role: Role
+        index: number
+      }[]
+    }
+    usage: {
+      text: {
+        question_tokens: number
+        prompt_tokens: number
+        completion_tokens: number
+        total_tokens: number
+      }
+    }
+  }
+}
