@@ -11,7 +11,10 @@ export const ChatList = ({ messagePool }: ChatListProps) => {
   return (
     <div className={styles.main}>
       {messagePool.map((message) => (
-        <ChatMessage key={message.timestamp} message={message} />
+        <ChatMessage
+          key={`${message.timestamp}_${message.role}`}
+          message={message}
+        />
       ))}
     </div>
   )

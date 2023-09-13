@@ -1,7 +1,48 @@
 .main {
   width: 100%;
-  display: flex;
+  padding: 10px;
   min-height: 60px;
   background-color: #ffffff;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.settingBtn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.middle {
+  font-weight: bold;
+  color: #2e9ec3;
+  user-select: none;
+}
+
+.popoverMain {
+  width: 200px;
+  padding: 16px 0px;
+}
+
+.formItme {
+  display: flex;
+  align-items: center;
+}
+
+.label {
+  line-height: 100%;
+  text-align: right;
+  min-width: 100px;
+
+  &::after {
+    content: ':';
+    position: relative;
+    margin-block: 0;
+    margin-inline-start: 2px;
+    margin-inline-end: 8px;
+  }
 }

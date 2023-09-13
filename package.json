@@ -10,6 +10,8 @@
     "package": "plasmo package"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.2.6",
+    "@plasmohq/storage": "^1.8.0",
     "antd": "^5.9.0",
     "base-64": "^1.0.0",
     "clsx": "^2.0.0",

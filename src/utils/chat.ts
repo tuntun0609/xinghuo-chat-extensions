@@ -1,16 +1,26 @@
+import { Storage } from '@plasmohq/storage'
+
 import { getConfig } from '~common/common'
+import type { ApiConfig } from '~components'
 import { Version, type ChatResponse, type MessageItem } from '~types'
 
-import { getWebsocketUrl, requestObj } from './getWebSocketUrl'
+import { getWebsocketUrl } from './getWebSocketUrl'
 
-export const sendMsg = (
+const storage = new Storage({
+  area: 'local',
+})
+
+export const sendMsg = async (
   content: string,
   messagePool: MessageItem[],
+  apiConfig: ApiConfig,
   onMessage?: (message: string) => void,
   version = Version.V2,
 ): Promise<string> => {
-  console.log(messagePool)
-  const url = getWebsocketUrl(getConfig(version))
+  const url = getWebsocketUrl(getConfig(version), apiConfig)
+  const temperature = (await storage.get('temperature')) ?? 0.5
+  const maxTokens = (await storage.get('max-tokens')) ?? 2048
+  const topK = (await storage.get('top_k')) ?? 4
   let result = ''
   return new Promise((resolve, reject) => {
     const socket = new WebSocket(url)
@@ -18,14 +28,15 @@ export const sendMsg = (
       // 发送消息
       let params = {
         header: {
-          app_id: requestObj.APPID,
+          app_id: apiConfig.APPID,
           uid: 'user1',
         },
         parameter: {
           chat: {
             domain: 'generalv2',
-            temperature: 0.5,
-            max_tokens: 300,
+            temperature: temperature,
+            max_tokens: maxTokens,
+            top_k: topK,
             chat_id: 'user1',
           },
         },

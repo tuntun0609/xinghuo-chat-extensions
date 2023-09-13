@@ -1,22 +1,28 @@
 import { ConfigProvider } from 'antd'
 import zhCN from 'antd/locale/zh_CN'
 import dayjs from 'dayjs'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useImmer } from 'use-immer'
 
-import { ChatHeader, ChatInput, ChatList } from '~components'
-import { Role, type MessageItem } from '~types'
+import { ChatContext, ChatHeader, ChatInput, ChatList } from '~components'
+import { Role, Version, type MessageItem } from '~types'
+import { sendMsg } from '~utils/chat'
 
 import 'dayjs/locale/zh-cn'
 import 'property-information'
 import './sidepanel.scss'
 
-import { sendMsg } from '~utils/chat'
-
 dayjs.locale('zh-cn')
+
+export const apiConfig = {
+  APPID: process.env.PLASMO_PUBLIC_APPID,
+  APISecret: process.env.PLASMO_PUBLIC_APISecret,
+  APIKey: process.env.PLASMO_PUBLIC_APIKey,
+}
 
 const SidePanelMain = () => {
   const [messagePool, setMessagePool] = useImmer<MessageItem[]>([])
+  const [version, setVersion] = useState<Version>(Version.V2)
 
   const addMessage = (content: string, role: Role, timestamp?: number) => {
     setMessagePool((draft) => {
@@ -35,7 +41,7 @@ const SidePanelMain = () => {
     const timestamp = dayjs().valueOf()
     // 添加初始化消息
     addMessage('', Role.Assistant, timestamp)
-    sendMsg(content, messages, (addContent) => {
+    sendMsg(content, messages, apiConfig, (addContent) => {
       setMessagePool((draft) => {
         draft.find(
           (item) =>
@@ -52,9 +58,16 @@ const SidePanelMain = () => {
 
   return (
     <ConfigProvider locale={zhCN}>
-      <ChatHeader />
-      <ChatList messagePool={messagePool} />
-      <ChatInput onSend={onAsk} />
+      <ChatContext.Provider
+        value={{
+          version,
+          setVersion,
+          apiConfig,
+        }}>
+        <ChatHeader />
+        <ChatList messagePool={messagePool} />
+        <ChatInput onSend={onAsk} />
+      </ChatContext.Provider>
     </ConfigProvider>
   )
 }

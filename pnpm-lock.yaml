@@ -5,6 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@ant-design/icons':
+    specifier: ^5.2.6
+    version: registry.npmmirror.com/@ant-design/icons@5.2.6(react-dom@18.2.0)(react@18.2.0)
+  '@plasmohq/storage':
+    specifier: ^1.8.0
+    version: registry.npmmirror.com/@plasmohq/storage@1.8.0(react@18.2.0)
   antd:
     specifier: ^5.9.0
     version: registry.npmmirror.com/antd@5.9.0(react-dom@18.2.0)(react@18.2.0)
@@ -2460,6 +2466,21 @@ packages:
       - velocityjs
       - walrus
       - whiskers
+    dev: false
+
+  registry.npmmirror.com/@plasmohq/storage@1.8.0(react@18.2.0):
+    resolution: {integrity: sha512-8VEVKq2takNaR6SBpRaS2KdLMwsoH91eekap1QA2M4B2CcyprSbsEMuK6HogfcD5gRBzHJAhHqwBGL9PdUJm7w==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@plasmohq/storage/-/storage-1.8.0.tgz}
+    id: registry.npmmirror.com/@plasmohq/storage/1.8.0
+    name: '@plasmohq/storage'
+    version: 1.8.0
+    peerDependencies:
+      react: ^16.8.6 || ^17 || ^18
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      pify: registry.npmmirror.com/pify@6.1.0
+      react: registry.npmmirror.com/react@18.2.0
     dev: false
 
   registry.npmmirror.com/@pnpm/config.env-replace@1.1.0:
@@ -6642,6 +6663,13 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
+
+  registry.npmmirror.com/pify@6.1.0:
+    resolution: {integrity: sha512-KocF8ve28eFjjuBKKGvzOBGzG8ew2OqOOSxTTZhirkzH7h3BI1vyzqlR0qbfcDBve1Yzo3FVlWUAtCRrbVN8Fw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/pify/-/pify-6.1.0.tgz}
+    name: pify
+    version: 6.1.0
+    engines: {node: '>=14.16'}
+    dev: false
 
   registry.npmmirror.com/pirates@4.0.6:
     resolution: {integrity: sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/pirates/-/pirates-4.0.6.tgz}
