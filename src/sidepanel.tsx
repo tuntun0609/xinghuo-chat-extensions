@@ -1,10 +1,19 @@
-import { ConfigProvider } from 'antd'
+import { ConfigProvider, message } from 'antd'
 import zhCN from 'antd/locale/zh_CN'
 import dayjs from 'dayjs'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useImmer } from 'use-immer'
 
-import { ChatContext, ChatHeader, ChatInput, ChatList } from '~components'
+import { Storage } from '@plasmohq/storage'
+import { useStorage } from '@plasmohq/storage/hook'
+
+import {
+  ChatContext,
+  ChatHeader,
+  ChatInput,
+  ChatList,
+  type ApiConfig,
+} from '~components'
 import { Role, Version, type MessageItem } from '~types'
 import { sendMsg } from '~utils/chat'
 
@@ -14,15 +23,24 @@ import './sidepanel.scss'
 
 dayjs.locale('zh-cn')
 
-export const apiConfig = {
-  APPID: process.env.PLASMO_PUBLIC_APPID,
-  APISecret: process.env.PLASMO_PUBLIC_APISecret,
-  APIKey: process.env.PLASMO_PUBLIC_APIKey,
-}
+// export const apiConfig: ApiConfig = {
+//   APPID: process.env.PLASMO_PUBLIC_APPID,
+//   APISecret: process.env.PLASMO_PUBLIC_APISecret,
+//   APIKey: process.env.PLASMO_PUBLIC_APIKey,
+// }
 
 const SidePanelMain = () => {
   const [messagePool, setMessagePool] = useImmer<MessageItem[]>([])
   const [version, setVersion] = useState<Version>(Version.V2)
+  const [apiConfig] = useStorage<ApiConfig>(
+    {
+      key: 'apiConfig',
+      instance: new Storage({
+        area: 'local',
+      }),
+    },
+    {},
+  )
 
   const addMessage = (content: string, role: Role, timestamp?: number) => {
     setMessagePool((draft) => {
@@ -52,6 +70,14 @@ const SidePanelMain = () => {
   }
 
   const onAsk = (content: string) => {
+    if (
+      apiConfig.APPID === undefined ||
+      apiConfig.APISecret === undefined ||
+      apiConfig.APIKey === undefined
+    ) {
+      message.error('请先配置 API')
+      return
+    }
     addMessage(content, Role.User)
     addAssistantMessage(content, messagePool)
   }

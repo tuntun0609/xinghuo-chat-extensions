@@ -1,9 +1,20 @@
 import { SettingOutlined } from '@ant-design/icons'
-import { Button, Form, InputNumber, Popover, Space, Tooltip } from 'antd'
-import type { ReactNode } from 'react'
+import {
+  Button,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  Popover,
+  Space,
+  Tooltip,
+} from 'antd'
+import { useState, type ReactNode } from 'react'
 
 import { Storage } from '@plasmohq/storage'
 import { useStorage } from '@plasmohq/storage/hook'
+
+import type { ApiConfig } from '~components'
 
 import styles from './index.module.scss'
 
@@ -26,7 +37,18 @@ const FormItem = ({
   )
 }
 
-const SettingPopover = () => {
+const SettingPopover = ({ closePopover }: { closePopover?: () => void }) => {
+  const [apiConfigForm] = Form.useForm()
+  const [apiFormModalOpen, setApiFormModalOpen] = useState(false)
+  const [apiConfig, setApiConfig] = useStorage<ApiConfig>(
+    {
+      key: 'apiConfig',
+      instance: new Storage({
+        area: 'local',
+      }),
+    },
+    {},
+  )
   const [temperature, setTemperature] = useStorage(
     {
       key: 'temperature',
@@ -92,12 +114,59 @@ const SettingPopover = () => {
             step={1}
           />
         </FormItem>
+        <Button
+          style={{ width: '100%' }}
+          type="primary"
+          onClick={() => {
+            setApiFormModalOpen(true)
+            closePopover?.()
+          }}>
+          设置api配置
+        </Button>
+        <Modal
+          destroyOnClose
+          title="设置api配置"
+          onCancel={() => setApiFormModalOpen(false)}
+          open={apiFormModalOpen}
+          onOk={() => {
+            apiConfigForm
+              .validateFields()
+              .then((values) => {
+                setApiConfig(values)
+                apiConfigForm.resetFields()
+                setApiFormModalOpen(false)
+              })
+              .catch((info) => {
+                console.log('Validate Failed:', info)
+              })
+          }}>
+          <Form initialValues={apiConfig} form={apiConfigForm}>
+            <Space size={16} style={{ width: '100%' }} direction="vertical">
+              <FormItem label="APPID">
+                <Form.Item noStyle name="APPID">
+                  <Input />
+                </Form.Item>
+              </FormItem>
+              <FormItem label="APISecret">
+                <Form.Item noStyle name="APISecret">
+                  <Input />
+                </Form.Item>
+              </FormItem>
+              <FormItem label="APIKey">
+                <Form.Item noStyle name="APIKey">
+                  <Input />
+                </Form.Item>
+              </FormItem>
+            </Space>
+          </Form>
+        </Modal>
       </Space>
     </div>
   )
 }
 
 export const ChatHeader = () => {
+  const [settingPopoverOpen, setSettingPopoverOpen] = useState(false)
   return (
     <div className={styles.main}>
       <Space className={styles.left}>
@@ -105,8 +174,18 @@ export const ChatHeader = () => {
       </Space>
       <div className={styles.middle}>Tun Xinghuo Chat</div>
       <Space className={styles.right}>
-        <Popover content={SettingPopover} title="设置" trigger="click">
-          <Button type="text" className={styles.settingBtn}>
+        <Popover
+          open={settingPopoverOpen}
+          content={
+            <SettingPopover closePopover={() => setSettingPopoverOpen(false)} />
+          }
+          title="设置"
+          onOpenChange={(open) => setSettingPopoverOpen(open)}
+          trigger="click">
+          <Button
+            onClick={() => setSettingPopoverOpen(true)}
+            type="text"
+            className={styles.settingBtn}>
             <SettingOutlined />
           </Button>
         </Popover>
