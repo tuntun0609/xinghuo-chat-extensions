@@ -1,7 +1,7 @@
 import { Storage } from '@plasmohq/storage'
 
 import { getConfig } from '~common/common'
-import type { ApiConfig } from '~components'
+import type { ApiConfig } from '~types'
 import { Version, type ChatResponse, type MessageItem } from '~types'
 
 import { getWebsocketUrl } from './getWebSocketUrl'
@@ -14,10 +14,11 @@ export const sendMsg = async (
   content: string,
   messagePool: MessageItem[],
   apiConfig: ApiConfig,
-  onMessage?: (message: string) => void,
   version = Version.V2,
+  onMessage?: (message: string) => void,
 ): Promise<string> => {
-  const url = getWebsocketUrl(getConfig(version), apiConfig)
+  const config = getConfig(version)
+  const url = getWebsocketUrl(config, apiConfig)
   const temperature = (await storage.get('temperature')) ?? 0.5
   const maxTokens = (await storage.get('max-tokens')) ?? 2048
   const topK = (await storage.get('top_k')) ?? 4
@@ -33,7 +34,7 @@ export const sendMsg = async (
         },
         parameter: {
           chat: {
-            domain: 'generalv2',
+            domain: config.general,
             temperature: temperature,
             max_tokens: maxTokens,
             top_k: topK,

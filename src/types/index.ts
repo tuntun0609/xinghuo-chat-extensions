@@ -65,3 +65,9 @@ export interface ChatResponse {
     }
   }
 }
+
+export interface ApiConfig {
+  APPID?: string
+  APISecret?: string
+  APIKey?: string
+}

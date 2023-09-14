@@ -7,14 +7,8 @@ import { useImmer } from 'use-immer'
 import { Storage } from '@plasmohq/storage'
 import { useStorage } from '@plasmohq/storage/hook'
 
-import {
-  ChatContext,
-  ChatHeader,
-  ChatInput,
-  ChatList,
-  type ApiConfig,
-} from '~components'
-import { Role, Version, type MessageItem } from '~types'
+import { ChatHeader, ChatInput, ChatList } from '~components'
+import { Role, Version, type ApiConfig, type MessageItem } from '~types'
 import { sendMsg } from '~utils/chat'
 
 import 'dayjs/locale/zh-cn'
@@ -23,15 +17,8 @@ import './sidepanel.scss'
 
 dayjs.locale('zh-cn')
 
-// export const apiConfig: ApiConfig = {
-//   APPID: process.env.PLASMO_PUBLIC_APPID,
-//   APISecret: process.env.PLASMO_PUBLIC_APISecret,
-//   APIKey: process.env.PLASMO_PUBLIC_APIKey,
-// }
-
 const SidePanelMain = () => {
   const [messagePool, setMessagePool] = useImmer<MessageItem[]>([])
-  const [version, setVersion] = useState<Version>(Version.V2)
   const [apiConfig] = useStorage<ApiConfig>(
     {
       key: 'apiConfig',
@@ -40,6 +27,15 @@ const SidePanelMain = () => {
       }),
     },
     {},
+  )
+  const [version, setVersion] = useStorage(
+    {
+      key: 'version',
+      instance: new Storage({
+        area: 'local',
+      }),
+    },
+    Version.V2,
   )
 
   const addMessage = (content: string, role: Role, timestamp?: number) => {
@@ -59,7 +55,7 @@ const SidePanelMain = () => {
     const timestamp = dayjs().valueOf()
     // 添加初始化消息
     addMessage('', Role.Assistant, timestamp)
-    sendMsg(content, messages, apiConfig, (addContent) => {
+    sendMsg(content, messages, apiConfig, version, (addContent) => {
       setMessagePool((draft) => {
         draft.find(
           (item) =>
@@ -84,16 +80,9 @@ const SidePanelMain = () => {
 
   return (
     <ConfigProvider locale={zhCN}>
-      <ChatContext.Provider
-        value={{
-          version,
-          setVersion,
-          apiConfig,
-        }}>
-        <ChatHeader />
-        <ChatList messagePool={messagePool} />
-        <ChatInput onSend={onAsk} />
-      </ChatContext.Provider>
+      <ChatHeader />
+      <ChatList messagePool={messagePool} />
+      <ChatInput onSend={onAsk} />
     </ConfigProvider>
   )
 }

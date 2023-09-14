@@ -6,6 +6,7 @@ import {
   InputNumber,
   Modal,
   Popover,
+  Select,
   Space,
   Tooltip,
 } from 'antd'
@@ -14,7 +15,8 @@ import { useState, type ReactNode } from 'react'
 import { Storage } from '@plasmohq/storage'
 import { useStorage } from '@plasmohq/storage/hook'
 
-import type { ApiConfig } from '~components'
+import type { ApiConfig } from '~types'
+import { Version } from '~types'
 
 import styles from './index.module.scss'
 
@@ -167,10 +169,26 @@ const SettingPopover = ({ closePopover }: { closePopover?: () => void }) => {
 
 export const ChatHeader = () => {
   const [settingPopoverOpen, setSettingPopoverOpen] = useState(false)
+  const [version, setVersion] = useStorage(
+    {
+      key: 'version',
+      instance: new Storage({
+        area: 'local',
+      }),
+    },
+    Version.V2,
+  )
   return (
     <div className={styles.main}>
       <Space className={styles.left}>
-        <div></div>
+        <Select
+          value={version}
+          onChange={(value) => setVersion(value)}
+          options={[
+            { value: Version.V1, label: 'v1' },
+            { value: Version.V2, label: 'v2' },
+          ]}
+        />
       </Space>
       <div className={styles.middle}>Tun Xinghuo Chat</div>
       <Space className={styles.right}>
