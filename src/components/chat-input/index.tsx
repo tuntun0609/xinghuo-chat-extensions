@@ -1,14 +1,23 @@
 import { Button, Input, Space } from 'antd'
-import React, { useState } from 'react'
+import React, { useImperativeHandle, useState } from 'react'
 
 import styles from './index.module.scss'
 
 interface ChatInputProps {
   onSend?: (content: string) => void
+  cRef: React.MutableRefObject<{
+    setContent: (content: string) => void
+  }>
 }
 
 export const ChatInput = (props: ChatInputProps) => {
   const [content, setContent] = useState('')
+
+  useImperativeHandle(props.cRef, () => ({
+    setContent: (content: string) => {
+      setContent(content)
+    },
+  }))
 
   const onContentChange: React.ChangeEventHandler<HTMLTextAreaElement> = (
     e,

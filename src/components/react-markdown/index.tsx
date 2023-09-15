@@ -10,7 +10,6 @@ export const Markdown = ({ children }: { children: string }) => {
       remarkPlugins={[remarkGfm]}
       components={{
         code({ node, inline, className, children, ...props }) {
-          console.log(node, inline, className, children)
           const match = /language-(\w+)/.exec(className || '')
           return !inline && match ? (
             <SyntaxHighlighter

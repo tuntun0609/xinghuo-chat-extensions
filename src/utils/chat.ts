@@ -4,6 +4,7 @@ import { getConfig } from '~common/common'
 import type { ApiConfig } from '~types'
 import { Version, type ChatResponse, type MessageItem } from '~types'
 
+import { getContent } from './getContent'
 import { getWebsocketUrl } from './getWebSocketUrl'
 
 const storage = new Storage({
@@ -21,6 +22,8 @@ export const sendMsg = async (
   const url = getWebsocketUrl(config, apiConfig)
   const temperature = (await storage.get('temperature')) ?? 0.5
   const maxTokens = (await storage.get('max-tokens')) ?? 2048
+  const maxContentTokens = (await storage.get('maxContentTokens')) ?? 2048
+  const sendContent = getContent(messagePool, Number(maxContentTokens))
   const topK = (await storage.get('top_k')) ?? 4
   let result = ''
   return new Promise((resolve, reject) => {
@@ -44,7 +47,7 @@ export const sendMsg = async (
         payload: {
           message: {
             text: [
-              ...messagePool.map((item) => ({
+              ...sendContent.map((item) => ({
                 role: item.role,
                 content: item.content,
               })),

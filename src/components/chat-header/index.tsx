@@ -78,6 +78,15 @@ const SettingPopover = ({ closePopover }: { closePopover?: () => void }) => {
     },
     4,
   )
+  const [maxContentTokens, setMaxContentTokens] = useStorage(
+    {
+      key: 'maxContentTokens',
+      instance: new Storage({
+        area: 'local',
+      }),
+    },
+    2048,
+  )
   return (
     <div className={styles.popoverMain}>
       <Space size={16} style={{ width: '100%' }} direction="vertical">
@@ -114,6 +123,17 @@ const SettingPopover = ({ closePopover }: { closePopover?: () => void }) => {
             max={6}
             min={1}
             step={1}
+          />
+        </FormItem>
+        <FormItem tooltip="上下文tokens的最大长度" label="上下文tokens">
+          <InputNumber
+            value={maxContentTokens}
+            onChange={(value) => {
+              setMaxContentTokens(value)
+            }}
+            max={4096}
+            min={1}
+            step={100}
           />
         </FormItem>
         <Button

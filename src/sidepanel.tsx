@@ -1,7 +1,7 @@
-import { ConfigProvider, message } from 'antd'
+import { Button, ConfigProvider, message } from 'antd'
 import zhCN from 'antd/locale/zh_CN'
 import dayjs from 'dayjs'
-import React, { useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useImmer } from 'use-immer'
 
 import { Storage } from '@plasmohq/storage'
@@ -19,6 +19,9 @@ dayjs.locale('zh-cn')
 
 const SidePanelMain = () => {
   const [messagePool, setMessagePool] = useImmer<MessageItem[]>([])
+  const inputRef = useRef<{
+    setContent: (content: string) => void
+  }>()
   const [apiConfig] = useStorage<ApiConfig>(
     {
       key: 'apiConfig',
@@ -28,7 +31,7 @@ const SidePanelMain = () => {
     },
     {},
   )
-  const [version, setVersion] = useStorage(
+  const [version] = useStorage(
     {
       key: 'version',
       instance: new Storage({
@@ -78,11 +81,22 @@ const SidePanelMain = () => {
     addAssistantMessage(content, messagePool)
   }
 
+  useEffect(() => {
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      if (request.type === 'search') {
+        inputRef.current.setContent(request.content)
+        sendResponse({
+          status: 'success',
+        })
+      }
+    })
+  }, [])
+
   return (
     <ConfigProvider locale={zhCN}>
       <ChatHeader />
       <ChatList messagePool={messagePool} />
-      <ChatInput onSend={onAsk} />
+      <ChatInput onSend={onAsk} cRef={inputRef} />
     </ConfigProvider>
   )
 }

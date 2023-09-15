@@ -7,7 +7,6 @@ export default {
   useTabs: false,
   semi: false,
   singleQuote: true,
-  trailingComma: "none",
   bracketSpacing: true,
   bracketSameLine: true,
   trailingComma: 'all',
